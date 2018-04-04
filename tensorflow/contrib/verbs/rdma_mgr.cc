@@ -87,7 +87,7 @@ void RdmaMgr::SetupChannels() {
     int attempts = 0;
     static const int max_num_attempts = 5;
     do {
-      s = client->GetRemoteAddress(&req, &resp);
+      s = client->GetRemoteAddress(&req, &resp); ///get remote address
       // save obtained remote addresses
       // connect to the remote channel
       if (s.ok()) {
@@ -99,7 +99,7 @@ void RdmaMgr::SetupChannels() {
         ra.snp = resp.channel().snp();
         ra.iid = resp.channel().iid();
         rc->SetRemoteAddress(ra, false);
-        rc->Connect();
+        rc->Connect(); /// RDMA connect success
         int i = 0;
         int idx[] = {1, 0};
         for (const auto& mr : resp.mr()) {

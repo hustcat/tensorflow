@@ -453,20 +453,20 @@ class RdmaChannel {
 
  protected:
   const RdmaAdapter* adapter_;
-  RdmaAddress self_;
+  RdmaAddress self_; /// local RdmaAddress 
   string local_name_;
   string remote_name_;
-  ibv_qp* qp_;
+  ibv_qp* qp_; ///queue pair
   mutex mu_;
   bool connected_ GUARDED_BY(mu_) = false;
-  RdmaAddress remote_ GUARDED_BY(mu_);
+  RdmaAddress remote_ GUARDED_BY(mu_);/// peer RdmaAddress
   bool remote_set_ GUARDED_BY(mu_) = false;
   mutex ct_mu_;
   typedef std::unordered_map<uint32_t, RdmaTensorRequest> RequestTable;
-  RequestTable request_table_ GUARDED_BY(ct_mu_);
+  RequestTable request_table_ GUARDED_BY(ct_mu_); /// RdmaTensorRequest map
   uint32_t request_serial_ GUARDED_BY(ct_mu_);
   mutex responses_mu_;
-  typedef std::unordered_map<uint32_t, RdmaTensorResponse> ResponsesTable;
+  typedef std::unordered_map<uint32_t, RdmaTensorResponse> ResponsesTable; /// RdmaTensorResponse map
   ResponsesTable responses_table_ GUARDED_BY(responses_mu_);
   RdmaMessageBuffer* tx_message_buffer_;
   RdmaMessageBuffer* rx_message_buffer_;

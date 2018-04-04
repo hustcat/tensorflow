@@ -837,7 +837,7 @@ void RdmaMessageBuffer::Write(const RdmaChannel* channel, uint32_t imm_data,
                               uint32_t rkey, RdmaWriteIDType write_type,
                               void* write_context) {
   struct ibv_sge list;
-  list.addr = src_addr;
+  list.addr = src_addr; /// buffer_
   list.length = buffer_size;
   list.lkey = lkey;
 
@@ -849,7 +849,7 @@ void RdmaMessageBuffer::Write(const RdmaChannel* channel, uint32_t imm_data,
   wr.opcode = IBV_WR_RDMA_WRITE_WITH_IMM;
   wr.send_flags = IBV_SEND_SIGNALED;
   wr.imm_data = imm_data;
-  wr.wr.rdma.remote_addr = remote_addr;
+  wr.wr.rdma.remote_addr = remote_addr; ///remote_addr
   wr.wr.rdma.rkey = rkey;
 
   struct ibv_send_wr* bad_wr;
@@ -873,8 +873,8 @@ void RdmaMessageBuffer::SendNextItem() {
     // local/remote_status_ won't be set back to idle
     // unitl Write() is successful
     mu_.unlock();
-    memcpy(buffer_, message.data(), message.size());
-    Write(imm_data, message.size());
+    memcpy(buffer_, message.data(), message.size()); ///copy data to buffer_
+    Write(imm_data, message.size()); /// send data
   } else {
     mu_.unlock();
   }
@@ -1092,7 +1092,7 @@ void RdmaTensorResponse::RecvHandler(Rendezvous::ParsedKey parsed,
           src_dev_, send_dev_context, &in, &copy,
           [this, copy, proto, is_dead](const Status& s) {
             Send(copy, proto, is_dead, s);
-          });
+          }); ///copy to CPU, then Send
     } else {
       GPUUtil::SetProtoFromGPU(
           in, src_dev_, send_args.device_context, &proto, is_dead,
@@ -1667,7 +1667,7 @@ void RdmaTensorRequest::Start() {
     AllocateTensorsAsync(
         [this](const Status& s) { Send(RDMA_MESSAGE_TENSOR_REQUEST); });
   } else {
-    Send(RDMA_MESSAGE_TENSOR_REQUEST);
+    Send(RDMA_MESSAGE_TENSOR_REQUEST); /// send RDMA_MESSAGE_TENSOR_REQUEST
   }
 }
 

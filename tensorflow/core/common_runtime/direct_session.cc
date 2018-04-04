@@ -559,7 +559,7 @@ Status DirectSession::RunInternal(int64 step_id, const RunOptions& run_options,
         SchedClosure(device_thread_pool, std::move(c));
       };
     }
-    item.executor->RunAsync(args, barrier->Get());
+    item.executor->RunAsync(args, barrier->Get()); ///ExecutorImpl::RunAsync
   }
 
   WaitForNotification(&run_state, &step_cancellation_manager,
@@ -655,7 +655,7 @@ Status DirectSession::Run(const RunOptions& run_options,
 
   TF_RETURN_IF_ERROR(GetOrCreateExecutors(input_tensor_names, output_names,
                                           target_nodes, &executors_and_keys,
-                                          &run_state_args));
+                                          &run_state_args)); ////(1) create executor
 
   // Configure a call frame for the step, which we use to feed and
   // fetch values to and from the executors.
@@ -686,7 +686,7 @@ Status DirectSession::Run(const RunOptions& run_options,
     LogMemory::RecordStep(step_id, run_state_args.handle);
   }
 
-  TF_RETURN_IF_ERROR(RunInternal(step_id, run_options, &call_frame,
+  TF_RETURN_IF_ERROR(RunInternal(step_id, run_options, &call_frame, ////
                                  executors_and_keys, run_metadata));
 
   // Receive outputs.
@@ -1094,7 +1094,7 @@ Status DirectSession::CreateExecutors(
   std::unordered_map<string, std::unique_ptr<Graph>> graphs;
   TF_RETURN_IF_ERROR(CreateGraphs(options, &graphs, &func_info->flib_def,
                                   run_state_args, &ek->input_types,
-                                  &ek->output_types));
+                                  &ek->output_types)); ///// create graph
 
   if (run_state_args->is_partial_run) {
     ek->graph = std::move(run_state_args->graph);

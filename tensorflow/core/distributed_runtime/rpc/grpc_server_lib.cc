@@ -325,10 +325,10 @@ Status GrpcServer::Start() {
     case NEW: {
       master_thread_.reset(
           env_->StartThread(ThreadOptions(), "TF_master_service",
-                            [this] { master_service_->HandleRPCsLoop(); }));
+                            [this] { master_service_->HandleRPCsLoop(); })); /// master service
       worker_thread_.reset(
           env_->StartThread(ThreadOptions(), "TF_worker_service",
-                            [this] { worker_service_->HandleRPCsLoop(); }));
+                            [this] { worker_service_->HandleRPCsLoop(); })); /// worker service
       state_ = STARTED;
       LOG(INFO) << "Started server with target: " << target();
       return Status::OK();

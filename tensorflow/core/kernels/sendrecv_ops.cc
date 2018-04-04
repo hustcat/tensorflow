@@ -102,7 +102,7 @@ void SendOp::Compute(OpKernelContext* ctx) {
                    Rendezvous::ParseKey(in_loop_parsed.buf_, &in_loop_parsed));
 
     ctx->SetStatus(ctx->rendezvous()->Send(in_loop_parsed, args, ctx->input(0),
-                                           ctx->is_input_dead()));
+                                           ctx->is_input_dead())); ///Rendezvous::Send
     return;
   }
 }

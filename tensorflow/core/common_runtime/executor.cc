@@ -1650,12 +1650,12 @@ void ExecutorState::Process(TaggedNode tagged_node, int64 scheduled_usec) {
           if (completed) Finish();
         };
         nodestats::SetOpStart(stats);
-        device->ComputeAsync(async, &state->ctx, done);
+        device->ComputeAsync(async, &state->ctx, done); ////
       } else {
         // Synchronous computes.
         OpKernelContext ctx(&params, item.num_outputs);
         nodestats::SetOpStart(stats);
-        device->Compute(CHECK_NOTNULL(op_kernel), &ctx);
+        device->Compute(CHECK_NOTNULL(op_kernel), &ctx); /// see MatMulOp::Compute
         nodestats::SetOpEnd(stats);
         s = ProcessOutputs(item, &ctx, &outputs, stats);
         if (s.ok() && impl_->device_record_tensor_accesses_) {
@@ -2120,7 +2120,7 @@ void ExecutorState::ScheduleReady(const TaggedNodeSeq& ready,
       // There are inline nodes to run already. We dispatch this expensive
       // node to other thread.
       runner_(std::bind(&ExecutorState::Process, this, *curr_expensive_node,
-                        scheduled_usec));
+                        scheduled_usec)); /// => ExecutorState::Process
     }
   }
 }
@@ -2600,7 +2600,7 @@ bool ExecutorState::FrameState::CleanupIterations(const GraphView* gview,
 }
 
 void ExecutorImpl::RunAsync(const Args& args, DoneCallback done) {
-  (new ExecutorState(args, this))->RunAsync(std::move(done));
+  (new ExecutorState(args, this))->RunAsync(std::move(done)); ///ExecutorState::RunAsync
 }
 
 }  // end namespace

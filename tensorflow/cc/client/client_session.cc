@@ -124,7 +124,7 @@ Status ClientSession::Run(const RunOptions& run_options, const FeedType& inputs,
   }
   TF_RETURN_IF_ERROR(impl()->MaybeExtendGraph());
   return impl()->session_->Run(run_options, feeds, output_tensor_names,
-                               target_node_names, outputs, run_metadata);
+                               target_node_names, outputs, run_metadata); ///DirectSession
 }
 
 }  // end namespace tensorflow
